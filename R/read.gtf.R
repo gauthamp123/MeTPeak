@@ -33,7 +33,9 @@
   temp=temp[,c(2,7,4,5,3,6,1)]
   colnames(temp)=c("chr","feature","start","stop","strand","gene","transcript")
   gtf=temp
-  
+
+  # fix duplication issues
+  gtf <- gtf[!duplicated(gtf[, c("gene", "start", "stop", "strand")]), ]
   # return data
   return(gtf)
 }
