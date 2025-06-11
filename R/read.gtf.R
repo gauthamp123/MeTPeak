@@ -36,6 +36,8 @@
 
   # fix duplication issues
   gtf <- gtf[!duplicated(gtf[, c("gene", "start", "stop", "strand")]), ]
+  print("Using modified .read.gtf()")
+  print(head(gtf))
   # return data
   return(gtf)
 }
