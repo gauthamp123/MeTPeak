@@ -29,29 +29,32 @@
   
   # try the internet method
   op <- options(warn = (-1))
-  ID = keys(txdb, "TXID")
-  # temp = select(txdb, ID , c(cols(txdb))[c(9:12,13,16)], "TXID")
-  temp = select(txdb, ID , c(columns(txdb))[c(7:8,12:14)], "TXID")
+  ID <- keys(txdb, keytype = "GENEID")
+  temp <- select(txdb,
+                 keys = ID,
+                 columns = c("GENEID", "TXID", "TXCHROM", "TXSTART", "TXEND", "TXSTRAND"),
+                 keytype = "GENEID")
+
+  temp$feature <- "exon"
   options(op)
 
-  # get the anno
-  temp$feature <- "exon"
-
+  
   
   gtf <- data.frame(
     chr        = temp$TXCHROM,
     feature    = temp$feature,
-    start      = temp$TXSTART,
-    stop       = temp$TXEND,
+    start      = as.numeric(temp$TXSTART),
+    stop       = as.numeric(temp$TXEND),
     strand     = temp$TXSTRAND,
     gene       = temp$GENEID,
     transcript = temp$TXID,
     stringsAsFactors = FALSE
   )
-  gtf <- gtf[!is.na(gtf$chr) & !is.na(gtf$start) & !is.na(gtf$stop), ]
-
+  gtf <- gtf[complete.cases(gtf[, c("chr", "start", "stop", "strand", "gene")]), ]
+  
   # fix duplication issues
   gtf <- gtf[!duplicated(gtf[, c("gene", "start", "stop", "strand")]), ]
+
   print("Using modified .read.gtf()")
   print(head(gtf))
   # return data
