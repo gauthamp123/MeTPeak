@@ -65,6 +65,8 @@ metpeak <- function(
   
   # read gene annotation
   ANNOTATION = .read.gtf(PARAMETERS)
+  ANNOTATION <- ANNOTATION[!duplicated(ANNOTATION[, c("gene", "start", "stop", "strand")]), ]
+  print("ANNOTATION deduplicated after .read.gtf()")
   ANNOTATION_BATCH_ID = .divide.anno.into.batches(ANNOTATION)
   
   # index bam files
