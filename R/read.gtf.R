@@ -20,6 +20,12 @@
   if (!is.na(PARAMETERS$TXDB) ) {
     txdb=PARAMETERS$TXDB
   }
+
+  print("Available keytypes:")
+  print(keytypes(txdb))
+  
+  print("Available columns:")
+  print(columns(txdb))
   
   # try the internet method
   op <- options(warn = (-1))
@@ -31,6 +37,7 @@
   # get the anno
   temp$feature <- "exon"
 
+  
   gtf <- data.frame(
     chr        = temp$TXCHROM,
     feature    = temp$feature,
