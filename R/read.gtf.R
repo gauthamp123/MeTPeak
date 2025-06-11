@@ -29,10 +29,19 @@
   options(op)
 
   # get the anno
-  temp = cbind(temp,"exon")
-  temp=temp[,c(2,7,4,5,3,6,1)]
-  colnames(temp)=c("chr","feature","start","stop","strand","gene","transcript")
-  gtf=temp
+  temp$feature <- "exon"
+
+  gtf <- data.frame(
+    chr        = temp$TXCHROM,
+    feature    = temp$feature,
+    start      = temp$TXSTART,
+    stop       = temp$TXEND,
+    strand     = temp$TXSTRAND,
+    gene       = temp$GENEID,
+    transcript = temp$TXID,
+    stringsAsFactors = FALSE
+  )
+  gtf <- gtf[!is.na(gtf$chr) & !is.na(gtf$start) & !is.na(gtf$stop), ]
 
   # fix duplication issues
   gtf <- gtf[!duplicated(gtf[, c("gene", "start", "stop", "strand")]), ]
