@@ -84,13 +84,20 @@
     
     
     # if H is singular, then break
-    errFlag = FALSE
-    errorHandler <- tryCatch({        # result from Gaussian elimination (H is singular)
-      tmp_step = -solve(H,J)
-    }, simpleError = function(e) {  # only catch simpleErrors
-      errFlag = TRUE
+    errFlag <- FALSE
+    tmp_step <- NA  # initialize to avoid undefined var
+    
+    errorHandler <- tryCatch({
+      tmp_step <- -solve(H, J)
+    }, error = function(e) {
+      errFlag <<- TRUE
     })
-    if (errFlag) {break}
+    
+    if (errFlag || any(is.na(tmp_step))) {
+      warning("Hessian solve failed. Exiting iteration.")
+      break
+    }
+
     
     tmp <- c + tmp_step
     while(any(tmp <= 0)){
