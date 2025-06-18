@@ -109,22 +109,36 @@ metpeak <- function(
   READS_COUNT=rbind(READS_COUNT,reads_count_group)}
   READS_COUNT=.help.minorm(data.frame(READS_COUNT),SAMPLE_ID) # use median to normalize the depth
   
-  # peak calling using different methods
-  if (METHOD==1){
-    # using constrained newton written in R (slowest version)
-    PEAK = .peak.call.module1(READS_COUNT,SAMPLE_ID,PARAMETERS)
-  }
-  else if (METHOD==2){
-    # using constrained newton written in C++
-    PEAK = .peak.call.module2(READS_COUNT,SAMPLE_ID,PARAMETERS)
-  }
-  else if (METHOD==3){
-    PEAK = .peak.call.module3(READS_COUNT,SAMPLE_ID,PARAMETERS)
-  }
-  else{
-    # using approximate method: mean newton in R (quickest version)
-    PEAK = .peak.call.module(READS_COUNT,SAMPLE_ID,PARAMETERS)
-  }
+  print("🧠 Starting peak calling...")
+
+if (METHOD==1){
+  print("📈 METHOD 1: R constrained Newton")
+  PEAK = .peak.call.module1(READS_COUNT,SAMPLE_ID,PARAMETERS)
+}
+else if (METHOD==2){
+  print("📈 METHOD 2: C++ constrained Newton")
+  PEAK = .peak.call.module2(READS_COUNT,SAMPLE_ID,PARAMETERS)
+}
+else if (METHOD==3){
+  print("📈 METHOD 3: Alternative method")
+  PEAK = .peak.call.module3(READS_COUNT,SAMPLE_ID,PARAMETERS)
+}
+else{
+  print("📈 METHOD 0: Fast approximate R version")
+  PEAK = .peak.call.module(READS_COUNT,SAMPLE_ID,PARAMETERS)
+}
+print("✅ Done peak calling")
+
+# before report/summary
+print("📋 Starting .get.table.peak.result()")
+TOTAL_PEAK_RESULT = .get.table.peak.result(PEAK,ANNOTATION,READS_COUNT,SAMPLE_ID,
+                                           PARAMETERS,ANNOTATION_BATCH_ID,PEAK$loci2peak_merged)
+
+print("📝 Starting .report.peak()")
+PEAK_RESULT = .report.peak(TOTAL_PEAK_RESULT,PARAMETERS)
+
+# before save
+print("💾 Saving intermediate results")
   
   
   # store the result
