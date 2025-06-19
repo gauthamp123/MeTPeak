@@ -1,11 +1,12 @@
 .metpeak.process <- function(IP,INPUT,batch_id,minimal_counts_in_fdr=10){
-  
+   print("Entered .metpeak.process()")
 #   using approximate Newton's method to call peaks per gene (the fastest method)
   Ng = unique(batch_id)
   nip <- ncol(IP)
   nin <- ncol(INPUT)
   INPUT_mean <- rowMeans(INPUT)
   IP_mean <- rowMeans(IP)
+  print("Step 1: Parsing input...")
   if (nip > nin) {
     avg_input <- round(matrix(rep(INPUT_mean,nip-nin),ncol=nip-nin))
     INPUT <- cbind(INPUT,avg_input) 
@@ -16,6 +17,7 @@
   }
   # initialize the variables
   pvalues <- rep(1,nrow(IP))
+  print("🔄 Step 2: Looping over batches or windows...")
   for (ii in Ng){
     
     # print(ii)
@@ -48,33 +50,20 @@
       else{
         pvalues[flag] = 1
       }
-      
-      
-    
-    #plot the result
-#     dot <- 1:nrow(ip); matplot(cbind(ip,input),col = 1:(ncol(ip)*2));points(dot[cl$class==1],rep(max(ip)/2,sum(cl$class==1))) # test part    
-#     anno = .get.gene.anno(ii,ANNOTATION,ANNOTATION_BATCH_ID)
-#     title(anno$gene)
-  
-    # cluster with biggest beta mean parameters assinged as peak cluster
-    
-      
   }
+  
   log.fdr=log(p.adjust(pvalues,method='fdr'))
   
-  # with significant number of reads only
+
   ID=which( (IP_mean+INPUT_mean) > minimal_counts_in_fdr) #should be vector not matrix
   log.fdr_sig=log(p.adjust(pvalues[ID], method = "fdr"))
   log.fdr[ID]=log.fdr_sig
-  # fold enrichment
+
   log.fc=log(IP_mean/(INPUT_mean+1))
-  # if total reads smaller than IP reads do not recognize a peak
-  #   ID <- which( log.fc <= 0 )
-  #   log.fdr[ID] <- 1
-  #   pvalues[ID] <- 1
-  
+
   # output result
   PW=list(log.p=log(pvalues),log.fdr=log.fdr,log.fc=log.fc)
+  print("Step N: Returning to .peak.call.module()")
   return(PW)
   
 }
