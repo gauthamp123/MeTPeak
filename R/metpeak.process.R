@@ -1,7 +1,8 @@
 .metpeak.process <- function(IP,INPUT,batch_id,minimal_counts_in_fdr=10){
    print("Entered .metpeak.process()")
 #   using approximate Newton's method to call peaks per gene (the fastest method)
-  Ng = unique(batch_id)
+  #Ng = unique(batch_id)
+  Ng <- unique(batch_id)[1:2]
   nip <- ncol(IP)
   nin <- ncol(INPUT)
   INPUT_mean <- rowMeans(INPUT)
@@ -17,9 +18,9 @@
   }
   # initialize the variables
   pvalues <- rep(1,nrow(IP))
-  print("🔄 Step 2: Looping over batches or windows...")
+  print("Step 2: Looping over batches or windows...")
   for (ii in Ng){
-    
+    print(paste("Starting batch", ii))
     # print(ii)
     flag <- batch_id==ii
     ip=as.matrix(IP[flag,])
@@ -50,6 +51,7 @@
       else{
         pvalues[flag] = 1
       }
+     print(paste("Finished batch", ii, "in", round(Sys.time() - t1, 2), "seconds"))
   }
   
   log.fdr=log(p.adjust(pvalues,method='fdr'))
