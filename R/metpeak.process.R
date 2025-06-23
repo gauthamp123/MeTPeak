@@ -51,7 +51,7 @@
       else{
         pvalues[flag] = 1
       }
-     print(paste("Finished batch", ii, "in", round(Sys.time() - t1, 2), "seconds"))
+     print(paste("Finished batch", ii))
   }
   
   log.fdr=log(p.adjust(pvalues,method='fdr'))
