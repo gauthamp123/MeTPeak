@@ -5,7 +5,8 @@
   
   # get dir
   dir=paste(PARAMETERS$OUTPUT_DIR,PARAMETERS$EXPERIMENT_NAME,sep='/')
-  
+  dir.create(dir, recursive = TRUE, showWarnings = FALSE)
+
   write.table(TOTAL_PEAK_RESULT,file=paste(dir,"peak.xls",sep="/"), sep="\t",row.names =FALSE,quote = FALSE)
   temp=TOTAL_PEAK_RESULT[,1:12]
   names(temp)[1]=paste("#",names(temp)[1])
