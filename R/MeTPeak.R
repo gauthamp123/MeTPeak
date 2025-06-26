@@ -134,6 +134,11 @@ print("📋 Starting .get.table.peak.result()")
 TOTAL_PEAK_RESULT = .get.table.peak.result(PEAK,ANNOTATION,READS_COUNT,SAMPLE_ID,
                                            PARAMETERS,ANNOTATION_BATCH_ID,PEAK$loci2peak_merged)
 
+cat("✅ Finished .get.table.peak.result()\n")
+str(TOTAL_PEAK_RESULT)
+head(TOTAL_PEAK_RESULT)
+cat("Number of columns in TOTAL_PEAK_RESULT: ", ncol(TOTAL_PEAK_RESULT), "\n")
+  
 print("📝 Starting .report.peak()")
 PEAK_RESULT = .report.peak(TOTAL_PEAK_RESULT,PARAMETERS)
 
